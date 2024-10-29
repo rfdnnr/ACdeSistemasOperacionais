@@ -1,0 +1,51 @@
+#!/bin/bash
+clear
+printf "###############################################################\n"
+printf "# IBMEC                                                       #\n"
+printf "# Sistemas Operacionais                    Semestre 2 de 2024 #\n"
+printf "# Código: IBM8940                          Turma 8001         #\n" 
+printf "# Professor: Luiz Fernando T. de Farias                       #\n"
+printf "#-------------------------------------------------------------#\n"
+printf "# Equipe Desenvolvedora:                                      #\n"
+printf "#  Aluno: Caio Rangel                                         #\n"
+printf "#  Aluno: Lucas Liduino                                       #\n"
+printf "#  Aluno: Rafael Donner                                       #\n"
+printf "#-------------------------------------------------------------#\n"
+
+
+printf "# Rio de Janeiro, %d de %s de %d" "$(date +%d)" "$(date +%B)" "$(date +%Y)"
+tput cup 11 62
+printf "#\n"
+
+printf "# Hora do Sistema: %d Horas e %d Minutos                      " "$(date +%H)" "$(date +%M)"
+tput cup 12 62
+printf "#\n"
+
+printf "###############################################################\n\n"
+
+printf "Menu de Escolhas:\n"
+printf " 1) \n"
+printf " 2) \n"
+printf " 3) \n"
+printf " 4) \n"
+printf " 5) Finalizar o programa.\n\n"
+
+
+while true; do
+	printf "Selecione uma opção: "
+	read opcao
+	if ! [[ "$opcao" =~ ^[0-5]+$ ]]; then
+       		printf "Erro: %s não é uma opção válida\n" "$opcao"
+	elif [ "$opcao" = "1" ]; then
+		printf "Opção 1 em desenvolvimento\n"
+	elif [ "$opcao" = "2" ]; then
+		printf "Opção 2 em desenvolvimento\n"
+	elif [ "$opcao" = "3" ]; then
+		printf "Opção 3 em desenvolvimento\n"
+	elif [ "$opcao" = "4" ]; then
+		printf "Opção 4 em desenvolvimento\n"
+	elif [ "$opcao" = "5" ]; then
+		printf "Programa finalizado.\n"
+		break
+	fi
+done
