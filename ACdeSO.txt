@@ -69,31 +69,31 @@ printf " 5) Finalizar o programa.\n\n"
 
 				if [ "$tipoListagem" = "1" ]; then
 					if [ "$detalhagem" = "s" ]; then
-						resultado=$(ls -lh "$dir" | grep '^-')
-					       	#-l mostra detalhadamente
-						#-h tamanho de arquivos legíveis
-						#'^-' apresenta apenas o conteúdo que contém									     #- no início da saída do ls -l, ou seja,							  		         	#apenas arquivos.
+						resultado=$(ls -lh "$dir" | grep '^-')		#-l mostra detalhadamente
+												#-h tamanho de arquivos legíveis
+												#'^-' apresenta apenas o conteúdo que contém									     
+												#- no início da saída do ls -l, ou seja,
+												#apenas arquivos.
+					       	
 						
 					else
-						resultado=$(find "$dir" -maxdepth 1 -type f ! -name '.*')
-						#procura sem entrar em subdiretórios (-maxdepth 1)
-						#procura apenas arquivos (-type f)
-						#impede que liste arquivos ocultos que começam com . (! -name '.*')	
-						
+						resultado=$(find "$dir" -maxdepth 1 -type f ! -name '.*')	#procura sem entrar em subdiretórios (-maxdepth 1)
+														#procura apenas arquivos (-type f)
+														#impede que liste arquivos ocultos que começam com . (! -name '.*')	
+														
 					fi
 				elif [ "$tipoListagem" = "2" ]; then
 					if [ "$detalhagem" = "s" ]; then
-						resultado=$(ls -lh "$dir" | grep '^d') 
-									#mostra apenas diretórios, pois procura
-									#no início da saída do ls -l a letra d,
-									#indicando um diretório.
+						resultado=$(ls -lh "$dir" | grep '^d') 		#mostra apenas diretórios, pois procura
+												#no início da saída do ls -l a letra d,
+												#indicando um diretório.
+									
 						
 					else
-						resultado=$(find "$dir" -maxdepth 1 -mindepth 1 -type d ! -name '.*')
-						#não lista o próprio diretório como resultado da busca (-mindepth 1)
-						#só lista diretórios (-type d)
-						#não lista arquivos ocultos
-						
+						resultado=$(find "$dir" -maxdepth 1 -mindepth 1 -type d ! -name '.*')		#não lista o próprio diretório como resultado da busca (-mindepth 1)
+																#só lista diretórios (-type d)
+																#não lista arquivos ocultos
+															
 					fi
 				elif [ "$tipoListagem" = "3" ]; then
 					if [ "$detalhagem" = "s" ]; then
@@ -105,7 +105,7 @@ printf " 5) Finalizar o programa.\n\n"
 					fi
 				fi
 
-				if [ -z "$resultado" ]; then #-z verifica se a variável resultado está vazi
+				if [ -z "$resultado" ]; then 	#-z verifica se a variável resultado está vazia
 					printf "Nada foi encontrado com os seus critérios de busca. \n"
 				else
 					printf "%s\n" "$resultado"
