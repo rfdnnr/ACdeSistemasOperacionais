@@ -1,4 +1,5 @@
 #!/bin/bash
+while true; do
 clear
 printf "###############################################################\n"
 printf "# IBMEC                                                       #\n"
@@ -24,20 +25,103 @@ printf "#\n"
 printf "###############################################################\n\n"
 
 printf "Menu de Escolhas:\n"
-printf " 1) \n"
+printf " 1) Listar conteúdo de um diretório.\n"
 printf " 2) \n"
 printf " 3) \n"
 printf " 4) \n"
 printf " 5) Finalizar o programa.\n\n"
 
 
-while true; do
 	printf "Selecione uma opção: "
 	read opcao
-	if ! [[ "$opcao" =~ ^[0-5]+$ ]]; then
+	if ! [[ "$opcao" =~ ^[1-5]+$ ]]; then
        		printf "Erro: %s não é uma opção válida\n" "$opcao"
 	elif [ "$opcao" = "1" ]; then
-		printf "Opção 1 em desenvolvimento\n"
+		clear
+		while true; do
+		
+			printf "\nPara voltar ao menu principal digite 4.\nDigite o caminho do diretório  a ser listado: \n"
+			read dir
+
+			if [ "$dir" = "4" ]; then
+				break
+
+			elif [ -d "$dir" ]; then #-d testa se o caminho dado é um diretório válido ou não (booleano)
+				printf "\nDigite 1 para listar apenas arquivos, 2 para listar apenas diretórios, 3 para ambos, e 4 para voltar ao menu principal.\n"
+				
+				read tipoListagem
+
+				if [ "$tipoListagem" = "4" ]; then
+					break
+				elif [ "$tipoListagem" !=  "3" ] && [ "$tipoListagem" != "2" ] && [ "$tipoListagem" != "1" ]; then
+					printf "Erro: a opção "$tipoListagem" não existe."
+					continue
+
+				fi
+
+				printf "\nDeseja uma listagem detalhada? (s/n): "
+				read detalhagem
+
+				if [ "$detalhagem" !=  "s" ] && [ "$detalhagem" != "n" ]; then
+					printf "Erro: comando inválido digitado.\nDigite s ou n.\n"
+					continue
+				fi
+
+				if [ "$tipoListagem" = "1" ]; then
+					if [ "$detalhagem" = "s" ]; then
+						resultado=$(ls -lh "$dir" | grep '^-')
+					       	#-l mostra detalhadamente
+						#-h tamanho de arquivos legíveis
+						#'^-' apresenta apenas o conteúdo que contém									     #- no início da saída do ls -l, ou seja,							  		         	#apenas arquivos.
+						
+					else
+						resultado=$(find "$dir" -maxdepth 1 -type f ! -name '.*')
+						#procura sem entrar em subdiretórios (-maxdepth 1)
+						#procura apenas arquivos (-type f)
+						#impede que liste arquivos ocultos que começam com . (! -name '.*')	
+						
+					fi
+				elif [ "$tipoListagem" = "2" ]; then
+					if [ "$detalhagem" = "s" ]; then
+						resultado=$(ls -lh "$dir" | grep '^d') 
+									#mostra apenas diretórios, pois procura
+									#no início da saída do ls -l a letra d,
+									#indicando um diretório.
+						
+					else
+						resultado=$(find "$dir" -maxdepth 1 -mindepth 1 -type d ! -name '.*')
+						#não lista o próprio diretório como resultado da busca (-mindepth 1)
+						#só lista diretórios (-type d)
+						#não lista arquivos ocultos
+						
+					fi
+				elif [ "$tipoListagem" = "3" ]; then
+					if [ "$detalhagem" = "s" ]; then
+						resultado=$(ls -lh "$dir") #lista todo o conteúdo do diretório com detalhes
+						
+					else
+						resultado=$(find "$dir" -maxdepth 1 -mindepth 1 ! -name '.*')
+						
+					fi
+				fi
+
+				if [ -z "$resultado" ]; then #-z verifica se a variável resultado está vazi
+					printf "Nada foi encontrado com os seus critérios de busca. \n"
+				else
+					printf "%s\n" "$resultado"
+				fi
+			
+			elif [ "$dir" = "4" ]; then
+				break
+			else
+
+				printf "Erro: O diretório %s não existe, ou é outro tipo de arquivo.\n\n" "$dir"
+			fi
+		done
+	
+
+
+
 	elif [ "$opcao" = "2" ]; then
 		printf "Opção 2 em desenvolvimento\n"
 	elif [ "$opcao" = "3" ]; then
