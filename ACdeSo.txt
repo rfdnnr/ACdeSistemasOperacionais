@@ -1,0 +1,180 @@
+#!/bin/bash
+while true; do
+    clear
+    printf "###############################################################\n"
+    printf "# IBMEC                                                       #\n"
+    printf "# Sistemas Operacionais                    Semestre 2 de 2024 #\n"
+    printf "# Código: IBM8940                          Turma 8001         #\n" 
+    printf "# Professor: Luiz Fernando T. de Farias                       #\n"
+    printf "#-------------------------------------------------------------#\n"
+    printf "# Equipe Desenvolvedora:                                      #\n"
+    printf "#  Aluno: Caio Rangel                                         #\n"
+    printf "#  Aluno: Lucas Liduino                                       #\n"
+    printf "#  Aluno: Rafael Donner                                       #\n"
+    printf "#-------------------------------------------------------------#\n"
+    printf "# Rio de Janeiro, %d de %s de %d" "$(date +%d)" "$(date +%B)" "$(date +%Y)"
+    tput cup 11 62
+    printf "#\n"
+    printf "# Hora do Sistema: %d Horas e %d Minutos                      " "$(date +%H)" "$(date +%M)"
+    tput cup 12 62
+    printf "#\n"
+    printf "###############################################################\n\n"
+    printf "Menu de Escolhas:\n"
+    printf " 1) Listar conteúdo de um diretório.\n"
+    printf " 2) Copiar um arquivo para um diretório.\n"
+    printf " 3) Renomear um arquivo.\n"
+    printf " 4) Opção 4 em desenvolvimento.\n"
+    printf " 5) Finalizar o programa.\n\n"
+    
+    printf "Selecione uma opção: "
+    read opcao
+
+    if ! [[ "$opcao" =~ ^[1-5]+$ ]]; then
+        printf "Erro: %s não é uma opção válida\n" "$opcao"
+    elif [ "$opcao" = "1" ]; then
+        clear
+        while true; do
+            printf "\nPara voltar ao menu principal digite 4.\nDigite o caminho do diretório a ser listado: \n"
+            read dir
+
+            if [ "$dir" = "4" ]; then
+                break
+            elif [ -d "$dir" ]; then
+                printf "\nDigite 1 para listar apenas arquivos, 2 para listar apenas diretórios, 3 para ambos, e 4 para voltar ao menu principal.\n"
+                read tipoListagem
+
+                if [ "$tipoListagem" = "4" ]; then
+                    break
+                elif [ "$tipoListagem" != "3" ] && [ "$tipoListagem" != "2" ] && [ "$tipoListagem" != "1" ]; then
+                    printf "Erro: a opção %s não existe.\n" "$tipoListagem"
+                    continue
+                fi
+
+                printf "\nDeseja uma listagem detalhada? (s/n): "
+                read detalhagem
+
+                if [ "$detalhagem" != "s" ] && [ "$detalhagem" != "n" ]; then
+                    printf "Erro: comando inválido digitado.\nDigite s ou n.\n"
+                    continue
+                fi
+
+                if [ "$tipoListagem" = "1" ]; then
+                    if [ "$detalhagem" = "s" ]; then
+                        resultado=$(ls -lh "$dir" | grep '^-') # Lista apenas arquivos com detalhes
+                    else
+                        resultado=$(find "$dir" -maxdepth 1 -type f ! -name '.*') # Lista arquivos sem subdiretórios
+                    fi
+                elif [ "$tipoListagem" = "2" ]; then
+                    if [ "$detalhagem" = "s" ]; then
+                        resultado=$(ls -lh "$dir" | grep '^d') # Lista apenas diretórios com detalhes
+                    else
+                        resultado=$(find "$dir" -maxdepth 1 -mindepth 1 -type d ! -name '.*') # Lista apenas diretórios
+                    fi
+                elif [ "$tipoListagem" = "3" ]; then
+                    if [ "$detalhagem" = "s" ]; then
+                        resultado=$(ls -lh "$dir") # Lista todos com detalhes
+                    else
+                        resultado=$(find "$dir" -maxdepth 1 -mindepth 1 ! -name '.*') # Lista todos sem detalhes
+                    fi
+                fi
+
+                if [ -z "$resultado" ]; then
+                    printf "Nada foi encontrado com os seus critérios de busca. \n"
+                else
+                    printf "%s\n" "$resultado"
+                fi
+            elif [ "$dir" = "4" ]; then
+                break
+            else
+                printf "Erro: O diretório %s não existe, ou é outro tipo de arquivo.\n\n" "$dir"
+            fi
+        done
+    elif [ "$opcao" = "2" ]; then
+        clear
+        while true; do
+            # Exibir arquivos disponíveis
+            printf "\nSelecione um arquivo para copiar:\n"
+            files=($(find . -maxdepth 1 -type f))
+            if [ "${#files[@]}" -eq 0 ]; then
+                printf "Nenhum arquivo encontrado no diretório atual.\n"
+            else
+                for i in "${!files[@]}"; do
+                    printf "%d) %s\n" $((i+1)) "$(basename "${files[$i]}")"
+                done
+            fi
+
+            # Solicitar o arquivo a ser copiado
+            printf "\nDigite o número do arquivo que deseja copiar ou 4 para voltar ao menu principal: "
+            read file_num
+            if [ "$file_num" = "4" ]; then
+                break
+            elif [[ "$file_num" =~ ^[0-9]+$ ]] && [ "$file_num" -ge 1 ] && [ "$file_num" -le "${#files[@]}" ]; then
+                source_file="${files[$((file_num-1))]}"
+            else
+                printf "Opção inválida.\n"
+                continue
+            fi
+
+            # Exibir diretórios de destino
+            printf "\nSelecione o diretório de destino (ou digite 4 para voltar):\n"
+            dirs=($(find . -maxdepth 1 -type d))
+            for i in "${!dirs[@]}"; do
+                printf "%d) %s\n" $((i+1)) "$(basename "${dirs[$i]}")"
+            done
+            printf "Digite o número do diretório de destino ou 4 para voltar: "
+            read target_dir_num
+            if [ "$target_dir_num" = "4" ]; then
+                break
+            elif [[ "$target_dir_num" =~ ^[0-9]+$ ]] && [ "$target_dir_num" -ge 1 ] && [ "$target_dir_num" -le "${#dirs[@]}" ]; then
+                target_dir="${dirs[$((target_dir_num-1))]}"
+                cp "$source_file" "$target_dir"
+                printf "Arquivo %s copiado para o diretório %s.\n" "$source_file" "$target_dir"
+                break
+            else
+                printf "Opção inválida.\n"
+            fi
+        done
+    elif [ "$opcao" = "3" ]; then
+        clear
+        while true; do
+            printf "\nEscolha um arquivo para renomear:\n"
+            files=($(find . -maxdepth 1 -type f))
+            if [ "${#files[@]}" -eq 0 ]; then
+                printf "Nenhum arquivo encontrado no diretório atual.\n"
+            else
+                for i in "${!files[@]}"; do
+                    printf "%d) %s\n" $((i+1)) "$(basename "${files[$i]}")"
+                done
+            fi
+
+            printf "\nDigite o número do arquivo que deseja renomear ou 4 para voltar ao menu principal: "
+            read file_num
+            if [ "$file_num" = "4" ]; then
+                break
+            elif [[ "$file_num" =~ ^[0-9]+$ ]] && [ "$file_num" -ge 1 ] && [ "$file_num" -le "${#files[@]}" ]; then
+                old_name="${files[$((file_num-1))]}"
+            else
+                printf "Opção inválida.\n"
+                continue
+            fi
+
+            printf "Digite o novo nome para o arquivo ou 4 para voltar ao menu principal: "
+            read new_name
+
+            if [ "$new_name" = "4" ]; then
+                break
+            elif [ -n "$new_name" ]; then
+                mv "$old_name" "$new_name"
+                printf "Arquivo renomeado de %s para %s.\n" "$old_name" "$new_name"
+                break
+            else
+                printf "Erro: Nome inválido.\n"
+            fi
+        done
+    elif [ "$opcao" = "4" ]; then
+        printf "Opção 4 em desenvolvimento\n"
+    elif [ "$opcao" = "5" ]; then
+        printf "Programa finalizado.\n"
+        break
+    fi
+done
