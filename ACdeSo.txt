@@ -1,4 +1,8 @@
 #!/bin/bash
+
+trap '' SIGINT
+trap '' SIGTSTP
+
 while true; do
     clear
     printf "###############################################################\n"
@@ -12,7 +16,7 @@ while true; do
     printf "#  Aluno: Lucas Liduino                                       #\n"
     printf "#  Aluno: Rafael Donner                                       #\n"
     printf "#-------------------------------------------------------------#\n"
-    printf "# Rio de Janeiro, %d de %s de %d" "$(date +%d)" "$(date +%B)" "$(date +%Y)"
+    printf "# Rio de Janeiro, %s de %s de %s" "$(date +%d)" "$(date +%B)" "$(date +%Y)"
     tput cup 11 62
     printf "#\n"
     printf "# Hora do Sistema: %d Horas e %d Minutos                      " "$(date +%H)" "$(date +%M)"
@@ -22,7 +26,7 @@ while true; do
     printf "Menu de Escolhas:\n"
     printf " 1) Listar conteúdo de um diretório.\n"
     printf " 2) Copiar um arquivo para um diretório.\n"
-    printf " 3) Renomear um arquivo.\n"
+    printf " 3) Renomear um arquivo do diretório atual.\n"
     printf " 4) Opção 4 em desenvolvimento.\n"
     printf " 5) Finalizar o programa.\n\n"
     
@@ -139,6 +143,7 @@ while true; do
         while true; do
             printf "\nEscolha um arquivo para renomear:\n"
             files=($(find . -maxdepth 1 -type f))
+
             if [ "${#files[@]}" -eq 0 ]; then
                 printf "Nenhum arquivo encontrado no diretório atual.\n"
             else
@@ -147,9 +152,10 @@ while true; do
                 done
             fi
 
-            printf "\nDigite o número do arquivo que deseja renomear ou 4 para voltar ao menu principal: "
+            printf "\nDigite o número do arquivo que deseja renomear ou 4a para voltar ao menu principal: "
             read file_num
-            if [ "$file_num" = "4" ]; then
+
+            if [ "$file_num" = "4a" ]; then
                 break
             elif [[ "$file_num" =~ ^[0-9]+$ ]] && [ "$file_num" -ge 1 ] && [ "$file_num" -le "${#files[@]}" ]; then
                 old_name="${files[$((file_num-1))]}"
@@ -164,9 +170,22 @@ while true; do
             if [ "$new_name" = "4" ]; then
                 break
             elif [ -n "$new_name" ]; then
-                mv "$old_name" "$new_name"
-                printf "Arquivo renomeado de %s para %s.\n" "$old_name" "$new_name"
-                break
+
+			if [ "$new_name" = "$(basename "$old_name")" ]; then
+				printf "O novo nome é igual ao nome atual.\n"
+			else
+                		mv "$old_name" "$new_name"
+				printf "Arquivo renomeado de %s para %s.\n" "$(basename "$old_name")" "$new_name"
+			fi
+
+		printf "Para voltar ao menu principal digite qualquer tecla.\n"
+		read sair
+
+		if [ "$sair" = "4" ]; then
+                	break
+		else
+			break
+		fi
             else
                 printf "Erro: Nome inválido.\n"
             fi
@@ -175,6 +194,8 @@ while true; do
         printf "Opção 4 em desenvolvimento\n"
     elif [ "$opcao" = "5" ]; then
         printf "Programa finalizado.\n"
+	trap - SIGINT
+	trap - SIGTSTP
         break
     fi
 done
