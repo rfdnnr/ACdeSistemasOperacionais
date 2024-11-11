@@ -25,9 +25,9 @@ while true; do
     printf "###############################################################\n\n"
     printf "Menu de Escolhas:\n"
     printf " 1) Listar conteúdo de um diretório.\n"
-    printf " 2) Copiar um arquivo para um diretório.\n"
+    printf " 2) Copiar um arquivo do diretório atual para um subdiretório.\n"
     printf " 3) Renomear um arquivo do diretório atual.\n"
-    printf " 4) Opção 4 em desenvolvimento.\n"
+    printf " 4) Excluir arquivos ou diretórios do diretório atual.\n"
     printf " 5) Finalizar o programa.\n\n"
     
     printf "Selecione uma opção: "
@@ -96,6 +96,7 @@ while true; do
     elif [ "$opcao" = "2" ]; then
         clear
         while true; do
+           
             # Exibir arquivos disponíveis
             printf "\nSelecione um arquivo para copiar:\n"
             files=($(find . -maxdepth 1 -type f))
@@ -108,9 +109,9 @@ while true; do
             fi
 
             # Solicitar o arquivo a ser copiado
-            printf "\nDigite o número do arquivo que deseja copiar ou 4 para voltar ao menu principal: "
+            printf "\nDigite o número do arquivo que deseja copiar ou 4a para voltar ao menu principal: "
             read file_num
-            if [ "$file_num" = "4" ]; then
+            if [ "$file_num" = "4a" ]; then
                 break
             elif [[ "$file_num" =~ ^[0-9]+$ ]] && [ "$file_num" -ge 1 ] && [ "$file_num" -le "${#files[@]}" ]; then
                 source_file="${files[$((file_num-1))]}"
@@ -120,20 +121,26 @@ while true; do
             fi
 
             # Exibir diretórios de destino
-            printf "\nSelecione o diretório de destino (ou digite 4 para voltar):\n"
-            dirs=($(find . -maxdepth 1 -type d))
+            printf "\nSelecione o diretório de destino (ou digite 4a para voltar ao menu principal):\n"
+            dirs=($(find . -maxdepth 1 -mindepth 1 -type d))
             for i in "${!dirs[@]}"; do
                 printf "%d) %s\n" $((i+1)) "$(basename "${dirs[$i]}")"
             done
-            printf "Digite o número do diretório de destino ou 4 para voltar: "
+            printf "Digite o número do diretório de destino ou 4a para voltar: "
             read target_dir_num
-            if [ "$target_dir_num" = "4" ]; then
+            if [ "$target_dir_num" = "4a" ]; then
                 break
             elif [[ "$target_dir_num" =~ ^[0-9]+$ ]] && [ "$target_dir_num" -ge 1 ] && [ "$target_dir_num" -le "${#dirs[@]}" ]; then
                 target_dir="${dirs[$((target_dir_num-1))]}"
                 cp "$source_file" "$target_dir"
-                printf "Arquivo %s copiado para o diretório %s.\n" "$source_file" "$target_dir"
-                break
+		printf "Arquivo %s copiado para o diretório %s.\n" "$(basename "$source_file")" "$(basename "$target_dir")"
+                printf "Para voltar ao menu principal digite qualquer tecla: "
+		read saida
+		if [ "$saida" = "4" ]; then
+			break
+		else
+			break
+		fi
             else
                 printf "Opção inválida.\n"
             fi
@@ -191,8 +198,57 @@ while true; do
             fi
         done
     elif [ "$opcao" = "4" ]; then
-        printf "Opção 4 em desenvolvimento\n"
-    elif [ "$opcao" = "5" ]; then
+        clear
+        while true; do
+            printf "\nEscolha um arquivo ou diretório para excluir:\n"
+            items=($(find . -maxdepth 1 -mindepth 1)) # Lista arquivos e diretórios no diretório atual
+
+            if [ "${#items[@]}" -eq 0 ]; then
+                printf "Nenhum item encontrado no diretório atual.\n"
+                break
+            else
+                for i in "${!items[@]}"; do
+                    printf "%d) %s\n" $((i+1)) "$(basename "${items[$i]}")"
+                done
+            fi
+
+            printf "\nDigite o número do item que deseja excluir ou 4a para voltar ao menu principal: "
+            read item_num
+
+            if [ "$item_num" = "4a" ]; then
+                break
+            elif [[ "$item_num" =~ ^[0-9]+$ ]] && [ "$item_num" -ge 1 ] && [ "$item_num" -le "${#items[@]}" ]; then
+                item="${items[$((item_num-1))]}"
+
+                if [ -d "$item" ]; then
+			printf "Se estiver apagando um diretório, todos os seus arquivos e subdiretórios também serâo exluídos.\n"
+		fi
+
+		printf "Tem certeza de que deseja excluir %s? (s/n): " "$(basename "$item")"
+                read confirmacao
+
+                if [ "$confirmacao" = "s" ]; then
+                    if [ -d "$item" ]; then
+                        rm -r "$item"
+                        printf "Diretório %s excluído com sucesso.\n" "$(basename "$item")"
+                    else
+                        rm "$item"
+                        printf "Arquivo %s excluído com sucesso.\n" "$(basename "$item")"
+                    fi
+                else
+                    printf "Exclusão cancelada.\n"
+                fi
+                printf "Pressione qualquer tecla para voltar ao menu principal.\n"
+                read saindo
+		if [ "$saindo" = "4" ]; then
+			break
+		else
+                	break
+		fi
+            else
+                printf "Opção inválida.\n"
+            fi
+        done    elif [ "$opcao" = "5" ]; then
         printf "Programa finalizado.\n"
 	trap - SIGINT
 	trap - SIGTSTP
