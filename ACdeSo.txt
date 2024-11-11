@@ -13,7 +13,6 @@ while true; do
     printf "#-------------------------------------------------------------#\n"
     printf "# Equipe Desenvolvedora:                                      #\n"
     printf "#  Aluno: Caio Rangel                                         #\n"
-    printf "#  Aluno: Lucas Liduino                                       #\n"
     printf "#  Aluno: Rafael Donner                                       #\n"
     printf "#-------------------------------------------------------------#\n"
     printf "# Rio de Janeiro, %s de %s de %s" "$(date +%d)" "$(date +%B)" "$(date +%Y)"
