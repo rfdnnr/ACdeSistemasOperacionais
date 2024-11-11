@@ -57,7 +57,22 @@ O script consiste em listar arquivos e(ou) diretórios em um caminho dado pelo u
 
 ## Opção 4
 ### Descrição
+Na opção 4, o script exibe uma lista numerada de todos os itens disponíveis no diretório atual, e o usuário escolhe o item pelo número correspondente. O programa verifica se o item é um arquivo ou um diretório e, caso seja um diretório, informa ao usuário que todos os arquivos e subdiretórios internos serão removidos junto com o diretório.
+Antes de deletar, o script solicita a confirmação do usuário. Essa confirmação adicional é importante para evitar exclusões acidentais de dados importantes.
+
 
 ### Comandos Usados
+- `find`: Utilizado para listar arquivos e diretórios no diretório atual com profundidade máxima e mínima de 1, para que, respectivamente, apenas os itens do diretório atual sejam exibidos e o diretório `.` (atual) não seja exibido.
+- `basename`: Exibe apenas o nome do arquivo ou diretório, sem o caminho completo, para facilitar a visualização e seleção pelo usuário.
+- `rm` e `rm -r`: `rm` é usado para excluir arquivos, enquanto `rm -r` é usado para remover diretórios recursivamente, incluindo todo o conteúdo interno, caso o usuário tenha confirmado a exclusão.
+- `read`: Captura as entradas do usuário..
 
+### Observações
+- `-d` e `-f`: Utilizados para verificar se o item selecionado é um diretório (`-d`) ou um arquivo (`-f`).
+  
 ### Referências
+- Documentação do comando `find`: [GNU find documentation](https://www.gnu.org/software/findutils/)
+- Documentação do comando `basename`: [GNU basename documentation](https://www.gnu.org/software/coreutils/manual/html_node/basename-invocation.html)
+- Documentação do comando `rm`: [GNU rm documentation](https://www.gnu.org/software/coreutils/manual/html_node/rm-invocation.html)
+- Documentação do comando `printf`: [GNU printf documentation](https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html#index-printf)
+- Documentação do comando `read`: [Bash read documentation](https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html#index-read)
