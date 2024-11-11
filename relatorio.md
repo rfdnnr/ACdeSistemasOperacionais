@@ -63,8 +63,8 @@ A **Opção 3** permite ao usuário renomear um arquivo do diretório atual. O s
 ## Opção 4: Deletar arquivos ou diretórios
 
 ### Descrição
-Na opção 4, o script exibe uma lista numerada de todos os itens disponíveis no diretório atual, e o usuário escolhe o item pelo número correspondente. O programa verifica se o item é um arquivo ou um diretório e, caso seja um diretório, informa ao usuário que todos os arquivos e subdiretórios internos serão removidos junto com o diretório.
-Antes de deletar, o script solicita a confirmação do usuário. Essa confirmação adicional é importante para evitar exclusões acidentais de dados importantes.
+Na opção 4, o script exibe uma lista numerada de todos os itens disponíveis no diretório atual, e o usuário escolhe um item. O programa verifica se é um arquivo ou um diretório e, caso seja um diretório, informa ao usuário que todos os arquivos e subdiretórios internos serão removidos juntos.
+Antes de deletar, o script solicita a confirmação do usuário.
 
 ### Comandos Usados
 - `find`: Utilizado para listar arquivos e diretórios no diretório atual com profundidade máxima e mínima de 1, para que, respectivamente, apenas os itens do diretório atual sejam exibidos e o diretório `.` (atual) não seja exibido.
