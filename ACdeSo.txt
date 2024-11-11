@@ -16,10 +16,10 @@ while true; do
     printf "#  Aluno: Rafael Donner                                       #\n"
     printf "#-------------------------------------------------------------#\n"
     printf "# Rio de Janeiro, %s de %s de %s" "$(date +%d)" "$(date +%B)" "$(date +%Y)"
-    tput cup 11 62
-    printf "#\n"
+    tput cup 10 62
+    printf "#\n" # A linha foi ajustada para cup 10 para evitar a quebra
     printf "# Hora do Sistema: %d Horas e %d Minutos                      " "$(date +%H)" "$(date +%M)"
-    tput cup 12 62
+    tput cup 11 62
     printf "#\n"
     printf "###############################################################\n\n"
     printf "Menu de Escolhas:\n"
@@ -31,7 +31,6 @@ while true; do
     
     printf "Selecione uma opção: "
     read opcao
-
     if ! [[ "$opcao" =~ ^[1-5]+$ ]]; then
         printf "Erro: %s não é uma opção válida\n" "$opcao"
     elif [ "$opcao" = "1" ]; then
